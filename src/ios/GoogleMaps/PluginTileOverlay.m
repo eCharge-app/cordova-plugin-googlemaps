@@ -88,7 +88,9 @@
           NSString *clsName = [webview className];
           NSURL *url;
           if ([clsName isEqualToString:@"UIWebView"]) {
-            url = ((UIWebView *)cdvViewController.webView).request.URL;
+            #if !WK_WEB_VIEW_ONLY
+                url = ((UIWebView *)cdvViewController.webView).request.URL;
+            #endif
           } else {
             url = [webview URL];
           }

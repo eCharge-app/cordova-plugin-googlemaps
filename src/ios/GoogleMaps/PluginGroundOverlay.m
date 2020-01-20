@@ -227,13 +227,15 @@
                   NSString *clsName = [webview className];
                   NSURL *url;
                   if ([clsName isEqualToString:@"UIWebView"]) {
-                    url = ((UIWebView *)cdvViewController.webView).request.URL;
-                    NSString *currentURL = url.absoluteString;
-                    currentURL = [currentURL stringByDeletingLastPathComponent];
-                    currentURL = [currentURL stringByReplacingOccurrencesOfString:@"file:" withString:@""];
-                    currentURL = [currentURL stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
-                    currentURL = [currentURL stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
-                    urlStr = [NSString stringWithFormat:@"file://%@/%@", currentURL, urlStr];
+                    #if !WK_WEB_VIEW_ONLY
+                        url = ((UIWebView *)cdvViewController.webView).request.URL;
+                        NSString *currentURL = url.absoluteString;
+                        currentURL = [currentURL stringByDeletingLastPathComponent];
+                        currentURL = [currentURL stringByReplacingOccurrencesOfString:@"file:" withString:@""];
+                        currentURL = [currentURL stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
+                        currentURL = [currentURL stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+                        urlStr = [NSString stringWithFormat:@"file://%@/%@", currentURL, urlStr];
+                    #endif
                   } else {
                     //------------------------------------------
                     // WKWebView URL is use http:// always

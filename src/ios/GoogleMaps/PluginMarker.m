@@ -1003,31 +1003,34 @@
       NSString *clsName = [webview className];
       NSURL *url;
       if ([clsName isEqualToString:@"UIWebView"]) {
-        url = ((UIWebView *)cdvViewController.webView).request.URL;
-        NSString *currentURL = url.absoluteString;
+        #if !WK_WEB_VIEW_ONLY
 
-        // remove page unchor (i.e index.html#page=test, index.html?key=value)
-        regex = [NSRegularExpression regularExpressionWithPattern:@"[#\\?].*$" options:NSRegularExpressionCaseInsensitive error:&error];
-        currentURL = [regex stringByReplacingMatchesInString:currentURL options:0 range:NSMakeRange(0, [currentURL length]) withTemplate:@""];
+            url = ((UIWebView *)cdvViewController.webView).request.URL;
+            NSString *currentURL = url.absoluteString;
 
-        // remove file name (i.e /index.html)
-        regex = [NSRegularExpression regularExpressionWithPattern:@"\\/[^\\/]+\\.[^\\/]+$" options:NSRegularExpressionCaseInsensitive error:&error];
-        currentURL = [regex stringByReplacingMatchesInString:currentURL options:0 range:NSMakeRange(0, [currentURL length]) withTemplate:@""];
+            // remove page unchor (i.e index.html#page=test, index.html?key=value)
+            regex = [NSRegularExpression regularExpressionWithPattern:@"[#\\?].*$" options:NSRegularExpressionCaseInsensitive error:&error];
+            currentURL = [regex stringByReplacingMatchesInString:currentURL options:0 range:NSMakeRange(0, [currentURL length]) withTemplate:@""];
 
-        if (![currentURL hasSuffix:@"/"]) {
-          currentURL = [NSString stringWithFormat:@"%@/", currentURL];
-        }
-        iconPath = [NSString stringWithFormat:@"%@%@", currentURL, iconPath];
+            // remove file name (i.e /index.html)
+            regex = [NSRegularExpression regularExpressionWithPattern:@"\\/[^\\/]+\\.[^\\/]+$" options:NSRegularExpressionCaseInsensitive error:&error];
+            currentURL = [regex stringByReplacingMatchesInString:currentURL options:0 range:NSMakeRange(0, [currentURL length]) withTemplate:@""];
 
-        // remove file name (i.e /index.html)
-        regex = [NSRegularExpression regularExpressionWithPattern:@"(\\/\\.\\/+)+" options:NSRegularExpressionCaseInsensitive error:&error];
-        iconPath = [regex stringByReplacingMatchesInString:iconPath options:0 range:NSMakeRange(0, [iconPath length]) withTemplate:@"/"];
+            if (![currentURL hasSuffix:@"/"]) {
+            currentURL = [NSString stringWithFormat:@"%@/", currentURL];
+            }
+            iconPath = [NSString stringWithFormat:@"%@%@", currentURL, iconPath];
 
-        iconPath = [iconPath stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+            // remove file name (i.e /index.html)
+            regex = [NSRegularExpression regularExpressionWithPattern:@"(\\/\\.\\/+)+" options:NSRegularExpressionCaseInsensitive error:&error];
+            iconPath = [regex stringByReplacingMatchesInString:iconPath options:0 range:NSMakeRange(0, [iconPath length]) withTemplate:@"/"];
 
-        if (self.mapCtrl.debuggable) {
-          NSLog(@"iconPath = %@", iconPath);
-        }
+            iconPath = [iconPath stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+
+            if (self.mapCtrl.debuggable) {
+            NSLog(@"iconPath = %@", iconPath);
+            }
+        #endif
       } else {
         //------------------------------------------
         // WKWebView
@@ -1185,7 +1188,9 @@
         NSString *clsName = [webview className];
         NSURL *url;
         if ([clsName isEqualToString:@"UIWebView"]) {
-          url = ((UIWebView *)cdvViewController.webView).request.URL;
+          #if !WK_WEB_VIEW_ONLY
+            url = ((UIWebView *)cdvViewController.webView).request.URL;
+          #endif
         } else {
           url = [webview URL];
         }

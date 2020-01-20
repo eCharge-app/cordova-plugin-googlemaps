@@ -55,12 +55,13 @@
         NSURL *url;
         NSString *currentURL;
         if ([clsName isEqualToString:@"UIWebView"]) {
-          //------------------------------------------
-          // UIWebView
-          //------------------------------------------
-          url = ((UIWebView *)cdvViewController.webView).request.URL;
-          currentURL = url.absoluteString;
-
+          #if !WK_WEB_VIEW_ONLY
+            //------------------------------------------
+            // UIWebView
+            //------------------------------------------
+            url = ((UIWebView *)cdvViewController.webView).request.URL;
+            currentURL = url.absoluteString;
+          #endif
         } else {
           //------------------------------------------
           // WKWebView
