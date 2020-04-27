@@ -12,7 +12,23 @@
 
 - (void)pluginInitialize
 {
-
+ NSString *key = @"GoogleMapsServerControlledParamsKey_bug_154855417";
+    BOOL keyExists = [[NSUserDefaults standardUserDefaults] boolForKey:key];
+    if (!keyExists) {
+        NSArray<NSURL *> *array =
+            [[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory
+                                                   inDomains:NSUserDomainMask];
+        if (array.count > 0) {
+            NSURL *url =
+                [array[0] URLByAppendingPathComponent:@"com.google.GoogleMaps/ServerControlledParams"
+                                          isDirectory:NO];
+            if (url) {
+                [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
+            }
+        }
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:key];
+    }
+    
   self.webView.backgroundColor = [UIColor clearColor];
   self.webView.opaque = NO;
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pageDidLoad) name:CDVPageDidLoadNotification object:nil];

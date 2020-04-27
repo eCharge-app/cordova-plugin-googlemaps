@@ -63,6 +63,25 @@ public class CordovaGoogleMaps extends CordovaPlugin implements ViewTreeObserver
     LOG.setLogLevel(LOG.ERROR);
 
     activity = cordova.getActivity();
+    try {
+      SharedPreferences hasFixedGoogleBug154855417 = activity.getSharedPreferences("google_bug_154855417", Context.MODE_PRIVATE);
+      if (!hasFixedGoogleBug154855417.contains("fixed")) {
+        File corruptedZoomTables = new File(activity.getFilesDir(), "ZoomTables.data");
+        File corruptedSavedClientParameters = new File(activity.getFilesDir(), "SavedClientParameters.data.cs");
+        File corruptedClientParametersData =
+          new File(
+            activity.getFilesDir(),
+            "DATA_ServerControlledParametersManager.data.v1."
+              + activity.getBaseContext().getPackageName());
+        corruptedZoomTables.delete();
+        corruptedSavedClientParameters.delete();
+        corruptedClientParametersData.delete();
+        hasFixedGoogleBug154855417.edit().putBoolean("fixed", true).apply();
+      }
+    } catch (Exception e) {
+
+    }
+
     final View view = webView.getView();
     view.getViewTreeObserver().addOnScrollChangedListener(CordovaGoogleMaps.this);
     root = (ViewGroup) view.getParent();
